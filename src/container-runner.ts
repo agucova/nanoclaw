@@ -253,13 +253,8 @@ function buildContainerArgs(
 
   // Rootless Podman: keep host UIDs inside the container so bind-mounted
   // files (especially IPC files written by the host) remain accessible.
-  if (CONTAINER_RUNTIME_BIN === 'docker') {
-    try {
-      const isPodman = execSync('docker --version', { encoding: 'utf-8' }).toLowerCase().includes('podman');
-      if (isPodman) {
-        args.push('--userns=keep-id');
-      }
-    } catch { /* not podman, skip */ }
+  if (process.env.NANOCLAW_USERNS_KEEP_ID === '1') {
+    args.push('--userns=keep-id');
   }
 
   for (const mount of mounts) {
